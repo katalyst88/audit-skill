@@ -1,0 +1,15 @@
+{
+  "name": "audit-skill",
+  "description": "A harm-first audit skill for Claude Code",
+  "owner": {
+    "name": "katalyst88",
+    "url": "https://github.com/katalyst88"
+  },
+  "plugins": [
+    {
+      "name": "audit",
+      "source": "./plugins/audit",
+      "description": "Picks which of 20 test and audit families apply, runs them under production-safe rails, and proves each check can fail before it reports clean."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "audit",
+  "displayName": "Audit",
+  "version": "1.0.0",
+  "description": "Harm-first audit skill: selects which of 20 test and audit families apply to the target, runs them under production-safe rails, and proves each check can fail before reporting clean.",
+  "author": {
+    "name": "katalyst88"
+  },
+  "repository": "https://github.com/katalyst88/audit-skill",
+  "license": "MIT",
+  "keywords": [
+    "audit",
+    "testing",
+    "code-review",
+    "accessibility",
+    "security",
+    "ux",
+    "qa",
+    "verification"
+  ]
+}
