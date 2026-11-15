@@ -8,7 +8,7 @@ description: Use when asked to audit, review, check, sanity check, stress test, 
 An audit is organised by **the kind of harm**, not by feature, and every finding carries the thing
 that proves it. Two phases, in order: **select** what is relevant, then **prove** what you claim.
 
-The 20 families live in `families.md`. Read it once you know which band applies — do not try to run
+The 21 families live in `families.md`. Read it once you know which band applies — do not try to run
 an audit from this page alone.
 
 ## Phase 1 — Select, and say what you ruled out
@@ -19,6 +19,7 @@ pulls in families. Nothing else runs.
 | If the target... | families |
 |---|---|
 | is supposed to run on its own, or right now | **F6 launcher and liveness, first, before anything else** |
+| is source code anybody will run | **F21 static analysis, first among the T families** |
 | holds configuration, or you are confirming a past fix | F7 persistence |
 | holds state nobody can regenerate | F8 backup |
 | holds logic with a threshold, parser, score or key | F1 unit, F4 edge state |
@@ -34,6 +35,12 @@ pulls in families. Nothing else runs.
 
 **F4 applies to everything.** So does F9 the moment any output reaches a human eye — including an
 email, a chat message, or a log a person reads.
+
+**F21 is the cheapest family and it goes first.** Linters and CVE scanners are minutes of compute
+against hours of judgement, and every finding they return is one a reviewer no longer has to hunt
+for. Attention spent on formatting is attention not spent on the thing only a human can see. But a
+green linter is a FLOOR: it proves no style drift and no known CVE, never that the code does what it
+claims. See the note at the foot of `families.md`.
 
 Then write the selection down before you start: the families in scope, and **the families you ruled
 out with the predicate that ruled each one out**. An audit that never says what it skipped cannot be

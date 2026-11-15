@@ -24,7 +24,7 @@ Without Claude Code, copy `plugins/audit/skills/audit/` into your assistant's sk
 
 ## What it does
 
-**Phase 1 — select.** Twenty families are listed, grouped into four bands: is it correct, does it
+**Phase 1 — select.** Twenty-one families are listed, grouped into four bands: is it correct, does it
 actually run, the thing people meet, and harm and limits. Each family has an observable predicate, so
 selection is mechanical rather than a matter of taste. A static page does not get a unit-test pass; a
 cron job gets its launcher checked before anything else. The audit has to state the families it ruled
@@ -49,14 +49,14 @@ visibility check, a status code standing in for a body.
 The report shape is fixed, severity is fixed by harm, and every finding is labelled `VERIFIED` with
 what was run, or `INFERRED` with what would settle it. Those two never share a bullet.
 
-## The twenty families
+## The twenty-one families
 
 | Band | Families |
 |---|---|
 | Is it correct | unit · integration and API · architecture and schema · edge state and data volume · acceptance and BDD |
 | Does it actually run | launcher and liveness · persistence and reverters · backup and rollback |
 | The thing people meet | rendered artefact · E2E journeys · cold start · restricted access and billing · hostile persona · heuristic and flow · copy and microcopy · accessibility · visual regression |
-| Harm and limits | security and vulnerability · performance, capacity and cost · LLM and AI evals |
+| Harm and limits | security and vulnerability · performance, capacity and cost · LLM and AI evals · static analysis and dependency scanning |
 
 The first eight bands' worth of engineering families are the familiar ones. The four that earn their
 place are **launcher and liveness**, **persistence and reverters**, **rendered artefact** and
