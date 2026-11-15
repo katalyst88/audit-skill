@@ -1,4 +1,4 @@
-# The 20 audit families
+# The 21 audit families
 
 Each family gives **applies when** as an observable predicate, **run** as the method, and **proof** as
 what makes a finding in that family believable. Tier **T** = triage (minutes, just run it).
@@ -263,3 +263,54 @@ input, adversarial phrasing, refusal behaviour, fail-closed behaviour.
   listed individually. Watch for a bare `except` around the model call: one hid a hard per-request API
   limit behind 4,000 anonymous errors, so the system looked merely slow.
 - **Tier:** D
+
+### F21 Static analysis and dependency scanning
+The machine-checkable half: linters, code-quality scanners, platform lint, security scanners and
+known-CVE checks against the dependency tree.
+- **Applies when:** the target is source code anybody will run. **Run it BEFORE the human families,
+  not after.** It is minutes of compute against hours of judgement, and every finding it returns is
+  one a reviewer no longer has to look for. A reviewer who spends their attention on formatting has
+  none left for the thing only a human can see.
+- **Run:** the tool that matches the language, then the two that match the risk.
+
+  | Purpose | Tool | Catches |
+  |---|---|---|
+  | Kotlin style | `ktlint` | formatting, naming, convention drift |
+  | Kotlin quality | `detekt` | complexity, code smells, bad patterns |
+  | Android platform | `./gradlew lint` | manifest, API level, resource, a11y |
+  | Android security | `mobsfscan` | insecure storage, exported components, cleartext |
+  | Python style and bugs | `ruff` | the flake8/pylint rule set, fast |
+  | Python security | `bandit` | shell injection, weak crypto, bare except |
+  | PowerShell | `PSScriptAnalyzer` | injection, unapproved verbs, scope bugs |
+  | Known CVEs | `osv-scanner` | vulnerable versions in the lockfile |
+
+  Check which of these are actually installed before planning around them. If you have to install
+  one, say so in the report, because that is a change to the machine. Android Lint needs no install:
+  it ships inside the Gradle plugin, so any Android target can be scanned straight away.
+
+  **The count is not the finding.** One Android app returned 14 lint errors and all 14 were false
+  positives. Six were `MissingPermission` on a notification call, first reported as real because
+  the permission is revocable and the call sites looked unguarded; checking the ENCLOSING block
+  rather than the two lines above showed every one sat inside `runCatching`. Eight were `Recycle`
+  on cursor queries that each had a matching `?.use { }`, which the check cannot see through. A
+  linter's error total is a list of places to look. Read each one against the surrounding code
+  before reporting any of it, and never put a tool's count in a report as though it were a defect
+  count.
+- **Proof:** the tool's own report, with the counts, **and the version of the tool**. A clean linter
+  run is only as good as its configuration: a `detekt` with every rule disabled and a `ruff` with
+  `--select E501` both exit 0 and mean nothing. Quote the rule set that was active, and if the repo
+  carries a config file, say whether anything was suppressed in it.
+  **A suppression is a finding.** `@Suppress`, `# noqa`, `baseline.xml` and `lint-baseline.xml` are
+  where the real defects go to be forgotten: a baseline file is a list of known problems that the
+  build is configured to stop mentioning. Count them and read a sample.
+- **Tier:** T, and it runs first among the T families.
+
+**Wiring it to CI is what stops it rotting.** A linter run by hand during one audit is a
+measurement; a CI job with a badge in the README is a gate. A check nobody is forced to look at is a
+check that silently stops running.
+
+**It is a floor, not a pass.** A repository that is green across all eight of these has no style
+drift and no known CVEs. It is NOT a repository that does what it claims: every expensive fault this
+skill was written from is syntactically perfect code doing the wrong thing, such as four scripts
+silently answering nothing because of a placeholder API key. No linter in that table would have
+flagged one of them. Run them because they are cheap, then do the real work.
